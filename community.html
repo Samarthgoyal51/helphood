@@ -662,7 +662,59 @@
         }
 
         /* Responsive */
+        /* Enhanced Responsive Design */
+        @media (max-width: 1200px) {
+            .container {
+                max-width: 95%;
+            }
+
+            .events-header {
+                gap: 1.5rem;
+            }
+
+            .search-bar {
+                width: 280px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .logo {
+                font-size: 1.3rem;
+            }
+
+            .intro h2 {
+                font-size: 2rem;
+            }
+
+            .events-header h1 {
+                font-size: 2rem;
+            }
+
+            .events-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1.5rem;
+            }
+
+            .modal-content {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .form-container,
+            .event-preview {
+                flex: none;
+            }
+        }
+
         @media (max-width: 768px) {
+            header {
+                padding: 0.8rem 4%;
+            }
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
             nav ul {
                 position: fixed;
                 top: 0;
@@ -675,10 +727,17 @@
                 gap: 2rem;
                 transition: var(--transition);
                 z-index: 1000;
+                padding: 2rem;
             }
 
             nav ul.active {
                 right: 0;
+            }
+
+            nav ul li a {
+                font-size: 1.2rem;
+                padding: 1rem 0;
+                text-align: center;
             }
 
             .hamburger {
@@ -697,6 +756,22 @@
                 transform: rotate(45deg) translate(-5px, -5px);
             }
 
+            .intro {
+                padding: 4rem 4% 2rem;
+            }
+
+            .intro h2 {
+                font-size: 1.8rem;
+            }
+
+            .intro p {
+                font-size: 1rem;
+            }
+
+            .container {
+                padding: 0 4%;
+            }
+
             .events-header {
                 flex-direction: column;
                 align-items: flex-start;
@@ -707,12 +782,98 @@
                 width: 100%;
             }
 
-            .modal-content {
-                flex-direction: column;
+            .events-grid {
+                grid-template-columns: 1fr;
             }
 
-            .events-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            .feature-card {
+                min-height: 280px;
+                margin: 0 0.5rem;
+            }
+
+            .modal-content {
+                width: 95%;
+                max-width: none;
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                padding: 0.7rem;
+                font-size: 1rem;
+            }
+
+            .btn {
+                padding: 0.7rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .intro {
+                padding: 3rem 3% 1.5rem;
+            }
+
+            .intro h2 {
+                font-size: 1.6rem;
+            }
+
+            .container {
+                padding: 0 3%;
+                margin-top: 5rem;
+            }
+
+            .events-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .event-card {
+                min-height: 250px;
+            }
+
+            .event-title {
+                font-size: 1.1rem;
+            }
+
+            .modal-content {
+                padding: 1rem;
+            }
+
+            .form-group {
+                margin-bottom: 0.8rem;
+            }
+        }
+
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .cursor,
+            .cursor-follower {
+                display: none !important;
+            }
+
+            .event-card:hover,
+            .feature-card:hover {
+                transform: none;
+                background: var(--card);
+            }
+
+            .btn:hover {
+                transform: none;
+                background: var(--primary);
+            }
+
+            /* Larger touch targets */
+            .btn,
+            .tab,
+            .close-btn {
+                min-height: 44px;
+                min-width: 44px;
+            }
+
+            .hamburger {
+                padding: 10px;
             }
         }
     </style>
@@ -836,7 +997,7 @@
                 <h3>Event Preview</h3>
                 <div class="preview-card" id="preview-card">
                     <div class="event-image">
-                        <img id="preview-image" src="" alt="Event preview">
+                        <img id="preview-image" src="/placeholder.svg" alt="Event preview">
                     </div>
                     <div class="event-info">
                         <h3 class="event-title" id="preview-title">Event Title</h3>
@@ -976,6 +1137,45 @@
                 cursorFollower.style.display = 'block';
             });
         }
+
+        // Touch-friendly interactions
+        function setupTouchInteractions() {
+            // Prevent body scroll when modals are open
+            const modals = [addEventModal, myEventsModal];
+
+            modals.forEach(modal => {
+                modal.addEventListener('touchmove', (e) => {
+                    if (modal.style.display === 'flex') {
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+            });
+
+            // Enhanced mobile menu
+            hamburger.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                hamburger.classList.toggle('active');
+                nav.classList.toggle('active');
+
+                if (nav.classList.contains('active')) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = '';
+                }
+            });
+
+            // Close menu when touching outside
+            document.addEventListener('touchstart', (e) => {
+                if (!nav.contains(e.target) && !hamburger.contains(e.target) && nav.classList.contains('active')) {
+                    hamburger.classList.remove('active');
+                    nav.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        }
+
+        // Call the function after DOM is loaded
+        document.addEventListener('DOMContentLoaded', setupTouchInteractions);
 
         // Format date for display
         function formatDate(dateString) {
