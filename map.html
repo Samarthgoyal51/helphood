@@ -689,100 +689,361 @@
         }
 
         /* Responsive */
-        @media (max-width: 768px) {
-            nav {
-                position: fixed;
-                top: 0;
-                right: -100%;
-                width: 85%;
-                height: 100vh;
-                background: var(--bg-light);
-                flex-direction: column;
-                justify-content: center;
-                gap: 2.5rem;
-                transition: var(--transition);
-                z-index: 1000;
-            }
+        @media (max-width: 1200px) {
+    .intro, .map-section {
+        padding: 6rem 4% 3rem;
+    }
+    
+    .map-container {
+        max-width: 95%;
+    }
+}
 
-            nav.active {
-                right: 0;
-            }
+@media (max-width: 992px) {
+    header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .intro h2 {
+        font-size: clamp(1.8rem, 4vw, 2.2rem);
+    }
+    
+    #map {
+        height: 55vh;
+    }
+    
+    .form-popup {
+        width: 95%;
+        max-width: 450px;
+        min-height: 350px;
+    }
+    
+    .emoji-keyboard {
+        width: 260px;
+        max-height: 280px;
+    }
+}
 
-            .hamburger {
-                display: block;
-            }
+@media (max-width: 768px) {
+    header {
+        padding: 1rem 4%;
+    }
+    
+    header h1 {
+        font-size: 1.6rem;
+    }
+    
+    nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 85%;
+        height: 100vh;
+        background: var(--bg-light);
+        flex-direction: column;
+        justify-content: center;
+        gap: 2.5rem;
+        transition: var(--transition);
+        z-index: 1000;
+        padding: 2rem;
+    }
 
-            .hamburger.active div:nth-child(1) {
-                transform: rotate(-45deg) translate(-6px, 7px);
-            }
+    nav.active {
+        right: 0;
+    }
+    
+    nav a {
+        font-size: 1.2rem;
+        padding: 1rem 0;
+        text-align: center;
+    }
+    
+    .cta-button {
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        width: 100%;
+        text-align: center;
+    }
 
-            .hamburger.active div:nth-child(2) {
-                opacity: 0;
-            }
+    .hamburger {
+        display: block;
+    }
 
-            .hamburger.active div:nth-child(3) {
-                transform: rotate(45deg) translate(-6px, -7px);
-            }
+    .hamburger.active div:nth-child(1) {
+        transform: rotate(-45deg) translate(-6px, 7px);
+    }
 
-            .intro h2 {
-                font-size: clamp(1.8rem, 4vw, 2.2rem);
-            }
+    .hamburger.active div:nth-child(2) {
+        opacity: 0;
+    }
 
-            #map {
-                height: 50vh;
-            }
+    .hamburger.active div:nth-child(3) {
+        transform: rotate(45deg) translate(-6px, -7px);
+    }
+    
+    .intro {
+        padding: 5rem 4% 3rem;
+    }
+    
+    .intro h2 {
+        font-size: clamp(1.6rem, 5vw, 2rem);
+    }
+    
+    .intro p {
+        font-size: 1rem;
+    }
+    
+    .map-section {
+        padding: 3rem 4%;
+    }
+    
+    #map {
+        height: 50vh;
+        max-height: 400px;
+    }
 
-            .map-controls {
-                flex-direction: column;
-                align-items: center;
-            }
+    .map-controls {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .search-bar {
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .form-popup {
+        width: 95%;
+        max-width: 400px;
+        min-height: 350px;
+        padding: 1.5rem;
+    }
 
-            .form-popup {
-                width: 95%;
-                max-width: 400px;
-                min-height: 350px;
-                padding: 1.5rem;
-            }
+    .form-popup h3 {
+        font-size: 1.6rem;
+    }
 
-            .form-popup h3 {
-                font-size: 1.6rem;
-            }
+    .form-group label {
+        font-size: 1rem;
+    }
 
-            .form-group label {
-                font-size: 1rem;
-            }
+    .form-popup input,
+    .form-popup textarea {
+        padding: 0.8rem;
+        font-size: 1rem;
+    }
 
-            .form-popup input,
-            .form-popup textarea {
-                padding: 0.8rem;
-                font-size: 1rem;
-            }
+    .form-popup .submit-btn {
+        padding: 0.8rem 2rem;
+        font-size: 1rem;
+    }
 
-            .form-popup .submit-btn {
-                padding: 0.8rem 2rem;
-                font-size: 1rem;
-            }
+    .emoji-keyboard {
+        width: 95%;
+        max-width: 300px;
+        max-height: 250px;
+        /* On mobile, always center */
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+    }
 
-            .emoji-keyboard {
-                width: 95%;
-                max-width: 300px;
-                max-height: 250px;
-                /* On mobile, always center */
-                top: 50% !important;
-                left: 50% !important;
-                transform: translate(-50%, -50%) !important;
-            }
+    .emoji-grid {
+        grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+        gap: 0.5rem;
+    }
 
-            .emoji-grid {
-                grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
-                gap: 0.5rem;
-            }
+    .emoji-btn {
+        font-size: 1.4rem;
+        padding: 0.6rem;
+    }
+    
+    #reportList {
+        margin: 1.5rem auto;
+        padding: 1.5rem;
+        max-width: 95%;
+    }
+    
+    #reportList h3 {
+        font-size: 1.5rem;
+    }
+    
+    .sort-controls {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .sort-btn {
+        width: 100%;
+        padding: 0.7rem 1rem;
+    }
+    
+    .report-entry {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+    }
+    
+    .footer-content {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
 
-            .emoji-btn {
-                font-size: 1.4rem;
-                padding: 0.6rem;
-            }
-        }
+@media (max-width: 480px) {
+    .intro {
+        padding: 4rem 3% 2rem;
+    }
+    
+    .intro h2 {
+        font-size: clamp(1.4rem, 6vw, 1.8rem);
+    }
+    
+    .btn {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .map-section {
+        padding: 2rem 3%;
+    }
+    
+    #map {
+        height: 45vh;
+        max-height: 350px;
+    }
+    
+    .search-bar {
+        padding: 0.7rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .form-popup {
+        padding: 1.2rem;
+        min-height: 320px;
+    }
+    
+    .form-popup h3 {
+        font-size: 1.4rem;
+    }
+    
+    .form-group {
+        gap: 0.3rem;
+    }
+    
+    .form-group label {
+        font-size: 0.9rem;
+    }
+    
+    .form-popup input,
+    .form-popup textarea {
+        padding: 0.7rem;
+        font-size: 0.9rem;
+    }
+    
+    .close-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 1.5rem;
+    }
+    
+    .emoji-keyboard {
+        padding: 1rem;
+        max-height: 220px;
+    }
+    
+    .emoji-keyboard h4 {
+        font-size: 1.1rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .emoji-grid {
+        grid-template-columns: repeat(auto-fill, minmax(35px, 1fr));
+        gap: 0.4rem;
+    }
+    
+    .emoji-btn {
+        font-size: 1.2rem;
+        padding: 0.5rem;
+    }
+    
+    #reportList {
+        padding: 1rem;
+    }
+    
+    #reportList h3 {
+        font-size: 1.3rem;
+    }
+    
+    .report-entry {
+        padding: 0.7rem;
+        font-size: 0.85rem;
+    }
+    
+    .footer-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .cursor, .cursor-follower {
+        display: none !important;
+    }
+    
+    /* Larger touch targets */
+    .btn, .close-btn, .emoji-btn, .sort-btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .hamburger {
+        padding: 10px;
+    }
+    
+    .search-bar {
+        min-height: 44px;
+    }
+    
+    .form-popup input,
+    .form-popup textarea {
+        min-height: 44px;
+    }
+    
+    /* Remove hover effects */
+    .btn:hover, .emoji-btn:hover, .sort-btn:hover {
+        transform: none;
+    }
+}
+
+/* Landscape orientation for mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .intro {
+        padding: 3rem 4% 2rem;
+    }
+    
+    .intro h2 {
+        font-size: clamp(1.4rem, 4vw, 1.8rem);
+        margin-bottom: 1rem;
+    }
+    
+    .intro p {
+        margin-bottom: 1.5rem;
+    }
+    
+    #map {
+        height: 60vh;
+        max-height: 450px;
+    }
+    
+    .form-popup {
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+    
+    .emoji-keyboard {
+        max-height: 60vh;
+    }
+}
     </style>
 </head>
 
@@ -1199,6 +1460,33 @@
         function closeReports() {
             document.getElementById('reportList').style.display = 'none';
         }
+
+        // Enhanced touch support for map interactions
+map.on('touchstart', function (e) {
+    if (popupForm.style.display === 'flex') {
+        closeForm();
+    }
+    if (currentMarker) {
+        map.removeLayer(currentMarker);
+    }
+});
+
+map.on('touchend', function (e) {
+    if (e.originalEvent.touches.length === 0) {
+        currentMarker = L.marker(e.latlng).addTo(map);
+        popupForm.style.display = 'flex';
+        
+        // Force display the emoji keyboard immediately
+        emojiKeyboard.style.display = 'block';
+        
+        // Always center on mobile for touch
+        if (window.innerWidth <= 768) {
+            emojiKeyboard.style.top = '50%';
+            emojiKeyboard.style.left = '50%';
+            emojiKeyboard.style.transform = 'translate(-50%, -50%)';
+        }
+    }
+});
 
         map.on('click', function (e) {
     if (popupForm.style.display === 'flex') {
