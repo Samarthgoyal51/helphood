@@ -440,10 +440,40 @@
             }
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
+        /* Enhanced Responsive Design */
+        @media (max-width: 1200px) {
+            .main-content {
+                max-width: 95%;
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            header h1 {
+                font-size: 1.3rem;
+            }
+
+            .intro h2 {
+                font-size: 2rem;
+            }
+
             .main-content {
                 grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .section {
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 0.7rem 4%;
+            }
+
+            header h1 {
+                font-size: 1.2rem;
             }
 
             .hamburger {
@@ -462,10 +492,17 @@
                 gap: 2rem;
                 transition: var(--transition);
                 z-index: 1000;
+                padding: 2rem;
             }
 
             nav.active {
                 right: 0;
+            }
+
+            nav a {
+                font-size: 1.2rem;
+                padding: 1rem 0;
+                text-align: center;
             }
 
             .hamburger.active div:nth-child(1) {
@@ -478,6 +515,116 @@
 
             .hamburger.active div:nth-child(3) {
                 transform: rotate(45deg) translate(-5px, -5px);
+            }
+
+            .intro {
+                padding: 4rem 4% 2rem;
+            }
+
+            .intro h2 {
+                font-size: 1.8rem;
+            }
+
+            .intro p {
+                font-size: 1rem;
+            }
+
+            .main-content {
+                padding: 2rem 4% 3rem;
+            }
+
+            .section {
+                padding: 1.5rem;
+            }
+
+            .section h2 {
+                font-size: 1.5rem;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                padding: 0.7rem;
+                font-size: 1rem;
+            }
+
+            .btn {
+                padding: 0.7rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .track-table {
+                font-size: 0.9rem;
+            }
+
+            .track-table th,
+            .track-table td {
+                padding: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .intro {
+                padding: 3rem 3% 1.5rem;
+            }
+
+            .intro h2 {
+                font-size: 1.6rem;
+            }
+
+            .main-content {
+                padding: 1.5rem 3% 2rem;
+            }
+
+            .section {
+                padding: 1.2rem;
+            }
+
+            .section h2 {
+                font-size: 1.3rem;
+            }
+
+            .track-table {
+                font-size: 0.8rem;
+                overflow-x: auto;
+                display: block;
+                white-space: nowrap;
+            }
+
+            .track-table th,
+            .track-table td {
+                padding: 0.6rem;
+                min-width: 100px;
+            }
+        }
+
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .cursor,
+            .cursor-follower {
+                display: none !important;
+            }
+
+            .section:hover {
+                transform: none;
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            }
+
+            .btn:hover {
+                transform: none;
+                background: var(--primary);
+            }
+
+            /* Larger touch targets */
+            .btn,
+            .close-btn,
+            .hamburger {
+                min-height: 44px;
+                min-width: 44px;
+            }
+
+            .hamburger {
+                padding: 10px;
             }
         }
     </style>
