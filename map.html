@@ -1253,32 +1253,6 @@
                 closeEmojiKeyboard();
             }
         });
-
-// Find the emoji keyboard div
-const emojiKeyboardDiv = document.getElementById('emojiKeyboard');
-// Create a debug button after it
-const debugButton = document.createElement('button');
-debugButton.textContent = "Open Emoji Keyboard";
-debugButton.className = "btn";
-debugButton.style.position = "fixed";
-debugButton.style.bottom = "20px";
-debugButton.style.right = "20px";
-debugButton.style.zIndex = "10001";
-debugButton.onclick = function() {
-    emojiKeyboard.style.display = 'block';
-    openEmojiKeyboard();
-};
-document.body.appendChild(debugButton);
-
-// Make sure the emoji keyboard has a high z-index
-// Update the CSS for emoji-keyboard:
-document.head.insertAdjacentHTML('beforeend', `
-<style>
-.emoji-keyboard {
-    z-index: 10000 !important;
-}
-</style>
-`);
     </script>
 </body>
 
