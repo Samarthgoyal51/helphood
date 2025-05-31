@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Civic Feedback | HelpH00D</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Space+Grotesk:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00ff88;
+            --primary-dark: #00cc6a;
+            --accent: #00e4b4;
+            --accent-dark: #00b38f;
+            --bg: #0f0f0f;
+            --bg-light: #1c1c1c;
+            --text: #f5f5f5;
+            --text-muted: #b8b8b8;
+            --card: #1e1e1e;
+            --card-hover: #2a2a2a;
+            --glass: rgba(30, 30, 30, 0.6);
+            --transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            --status-pending: #ff4d4d;
+            --status-in-progress: #ffd700;
+            --status-resolved: #00ff88;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary);
+            mix-blend-mode: difference;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease, background 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
+        }
+
+        .cursor-follower {
+            position: fixed;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 1px solid var(--accent);
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: transform 0.2s ease, width 0.3s ease, height 0.3s ease, border-color 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .cursor.active {
+            width: 24px;
+            height: 24px;
+            background: var(--accent);
+            opacity: 0.9;
+            box-shadow: 0 0 30px rgba(0, 228, 180, 0.7);
+        }
+
+        .cursor-follower.active {
+            width: 60px;
+            height: 60px;
+            border-color: var(--primary);
+            opacity: 0.7;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 5px;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(15, 15, 15, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 0.8rem 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: var(--transition);
+            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        header.scrolled {
+            padding: 0.6rem 6%;
+            background: rgba(10, 10, 10, 0.98);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        header h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            color: var(--primary);
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        header h1 span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.4rem 0;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .hamburger {
+            display: none;
+            cursor: none;
+            z-index: 1001;
+        }
+
+        .hamburger div {
+            width: 20px;
+            height: 3px;
+            background: var(--text);
+            margin: 4px;
+            transition: var(--transition);
+        }
+
+        /* Intro Section */
+        .intro {
+            padding: 5rem 6% 2rem;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .intro h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.4rem;
+            color: var(--primary);
+            margin-bottom: 1.2rem;
+            position: relative;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        .intro h2::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--primary);
+        }
+
+        .intro p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease-out 0.5s forwards;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem 6% 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .section {
+            background: var(--card);
+            padding: 2.5rem;
+            border-radius: 14px;
+            transition: var(--transition);
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease-out 0.4s forwards;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 255, 136, 0.3);
+            background: var(--card-hover);
+        }
+
+        .section h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 0;
+            width: 50px;
+            height: 4px;
+            background: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--bg-light);
+            border-radius: 8px;
+            background: var(--bg-light);
+            color: var(--text);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent);
+            outline: none;
+            background: var(--card);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: var(--bg);
+            padding: 0.8rem 2rem;
+            border-radius: 30px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            border: none;
+            cursor: none;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 255, 136, 0.4);
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.7);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        .track-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .track-table th,
+        .track-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .track-table th {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .track-table td {
+            color: var(--text-muted);
+        }
+
+        .status-pending {
+            color: var(--status-pending);
+            font-weight: 600;
+        }
+
+        .status-in-progress {
+            color: var(--status-in-progress);
+            font-weight: 600;
+        }
+
+        .status-resolved {
+            color: var(--status-resolved);
+            font-weight: 600;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.7;
+                transform: scale(1.3);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 1;
+            }
+
+            20% {
+                transform: scale(30, 30);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(50, 50);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            nav {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 85%;
+                height: 100vh;
+                background: var(--bg-light);
+                flex-direction: column;
+                justify-content: center;
+                gap: 2rem;
+                transition: var(--transition);
+                z-index: 1000;
+            }
+
+            nav.active {
+                right: 0;
+            }
+
+            .hamburger.active div:nth-child(1) {
+                transform: rotate(-45deg) translate(-5px, 5px);
+            }
+
+            .hamburger.active div:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active div:nth-child(3) {
+                transform: rotate(45deg) translate(-5px, -5px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <!-- Header -->
+    <header id="header">
+        <h1>HELPHOOD: Civic Feedback <span></span></h1>
+        <nav id="nav">
+            <a href="/" class="nav-link">Home</a>
+            <a href="#submit" class="nav-link">Submit Issue</a>
+            <a href="#track" class="nav-link">Track Updates</a>
+            <a href="/contact" class="nav-link">Contact</a>
+        </nav>
+        <div class="hamburger" id="hamburger">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </header>
+
+    <!-- Intro Section -->
+    <section class="intro" id="intro">
+        <h2>Civic Feedback</h2>
+        <p>Have a suggestion or concern about your neighborhood? Use our Civic Feedback tool to report issues like
+            potholes, garbage, or streetlight faults directly to local authorities. Track the progress of your
+            submissions and help improve your community!</p>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <section class="section" id="submit">
+            <h2>Submit a Complaint or Suggestion</h2>
+            <form id="feedback-form">
+                <div class="form-group">
+                    <label for="issue-type">Issue Type</label>
+                    <select id="issue-type" required>
+                        <option value="" disabled selected>Select an issue</option>
+                        <option value="pothole">Pothole</option>
+                        <option value="garbage">Garbage</option>
+                        <option value="streetlight">Streetlight Fault</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" placeholder="Enter location (e.g., 123 Main St)" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" placeholder="Describe the issue or suggestion" required></textarea>
+                </div>
+                <button type="submit" class="btn">Submit</button>
+            </form>
+        </section>
+        <section class="section" id="track">
+            <h2>Track Infrastructure Updates</h2>
+            <table class="track-table">
+                <thead>
+                    <tr>
+                        <th>Issue ID</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="track-table-body">
+                    <!-- Issues will be loaded here -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script>
+        // Custom Cursor
+        const cursor = document.querySelector('.cursor');
+        const cursorFollower = document.querySelector('.cursor-follower');
+
+        cursor.style.display = 'block';
+        cursorFollower.style.display = 'block';
+
+        document.addEventListener('mousemove', (e) => {
+            requestAnimationFrame(() => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+            });
+            setTimeout(() => {
+                cursorFollower.style.left = e.clientX + 'px';
+                cursorFollower.style.top = e.clientY + 'px';
+            }, 50);
+        });
+
+        const interactiveElements = document.querySelectorAll('a, button, .section, .hamburger');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.classList.add('active');
+                cursorFollower.classList.add('active');
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.classList.remove('active');
+                cursorFollower.classList.remove('active');
+            });
+        });
+
+        document.addEventListener('mouseleave', () => {
+            cursor.style.display = 'none';
+            cursorFollower.style.display = 'none';
+        });
+
+        document.addEventListener('mouseenter', () => {
+            cursor.style.display = 'block';
+            cursorFollower.style.display = 'block';
+        });
+
+        // Header Scroll Effect
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile Menu
+        const hamburger = document.getElementById('hamburger');
+        const nav = document.getElementById('nav');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            nav.classList.toggle('active');
+        });
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                nav.classList.remove('active');
+            });
+        });
+
+        // Smooth Scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // LocalStorage functions for civic issues
+        function saveCivicIssues(issues) {
+            localStorage.setItem('civicIssues', JSON.stringify(issues));
+        }
+
+        function loadCivicIssues() {
+            const stored = localStorage.getItem('civicIssues');
+            if (stored) {
+                return JSON.parse(stored);
+            }
+            // Default issues if none stored
+            return [
+                {
+                    id: '#001',
+                    description: 'Pothole at 123 Main St',
+                    status: 'In Progress',
+                    statusClass: 'status-in-progress'
+                },
+                {
+                    id: '#002',
+                    description: 'Garbage pile at Elm St',
+                    status: 'Pending',
+                    statusClass: 'status-pending'
+                },
+                {
+                    id: '#003',
+                    description: 'Streetlight out at Oak Ave',
+                    status: 'Resolved',
+                    statusClass: 'status-resolved'
+                }
+            ];
+        }
+
+        function getNextIssueId(issues) {
+            if (issues.length === 0) return '#001';
+            
+            const lastId = issues[issues.length - 1].id;
+            const number = parseInt(lastId.substring(1)) + 1;
+            return '#' + String(number).padStart(3, '0');
+        }
+
+        function renderCivicIssues() {
+            const issues = loadCivicIssues();
+            const tableBody = document.getElementById('track-table-body');
+            
+            tableBody.innerHTML = '';
+            
+            issues.forEach(issue => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${issue.id}</td>
+                    <td>${issue.description}</td>
+                    <td class="${issue.statusClass}">${issue.status}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Form Submission and Table Update with persistence
+        document.getElementById('feedback-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            
+            const issueType = document.getElementById('issue-type').value;
+            const location = document.getElementById('location').value;
+            const description = document.getElementById('description').value;
+            
+            // Load existing issues
+            const issues = loadCivicIssues();
+            
+            // Create new issue
+            const newIssue = {
+                id: getNextIssueId(issues),
+                description: `${issueType.charAt(0).toUpperCase() + issueType.slice(1)} at ${location}`,
+                status: 'Pending',
+                statusClass: 'status-pending'
+            };
+            
+            // Add to issues array
+            issues.push(newIssue);
+            
+            // Save to localStorage
+            saveCivicIssues(issues);
+            
+            // Re-render the table
+            renderCivicIssues();
+
+            // Show confirmation
+            alert(`Submitted: ${issueType} at ${location}\nDescription: ${description}`);
+            this.reset();
+        });
+
+        // Button Ripple Effect
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach(button => {
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
+                const x = e.clientX - e.target.getBoundingClientRect().left;
+                const y = e.clientY - e.target.getBoundingClientRect().top;
+
+                const ripple = document.createElement('span');
+                ripple.style.left = `${x}px`;
+                ripple.style.top = `${y}px`;
+                ripple.style.position = 'absolute';
+                ripple.style.width = '6px';
+                ripple.style.height = '6px';
+                ripple.style.background = 'rgba(255, 255, 255, 0.7)';
+                ripple.style.borderRadius = '100%';
+                ripple.style.transform = 'scale(1, 1) translate(-50%, -50%)';
+                ripple.style.transformOrigin = '50% 50%';
+                ripple.style.animation = 'ripple 1s ease-out';
+
+                this.appendChild(ripple);
+
+                setTimeout(() => {
+                    ripple.remove();
+                }, 1000);
+
+                // Trigger form submission if it's the submit button
+                if (this.type === 'submit') {
+                    this.closest('form').dispatchEvent(new Event('submit', { cancelable: true }));
+                }
+            });
+        });
+
+        // Load issues when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            renderCivicIssues();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HelpHood Safety Alerts</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00ff88;
+            --primary-dark: #00cc6a;
+            --bg: #0f0f0f;
+            --bg-light: #1a1a1a;
+            --text: #f0f0f0;
+            --text-muted: #b0b0b0;
+            --card: #1a1a1a;
+            --card-hover: #252525;
+            --glass: rgba(25, 25, 25, 0.5);
+            --error-red: #e74c3c;
+            --alert-critical: #e74c3c;
+            --alert-warning: #f1c40f;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(15, 15, 15, 0.9);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        header.scrolled {
+            background: rgba(10, 10, 10, 0.98);
+            box-shadow: 0 3px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            font-family: 'Space Grotesk', sans-serif;
+            color: var(--primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo span {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        nav ul li a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        nav ul li a:hover {
+            color: var(--primary);
+        }
+
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .hamburger div {
+            width: 20px;
+            height: 2px;
+            background: var(--text);
+            margin: 4px;
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 6rem auto 3rem;
+            padding: 0 5%;
+        }
+
+        .alerts-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .alerts-header h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        .search-bar {
+            display: flex;
+            width: 250px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 0.6rem 1rem;
+            border: none;
+            background: transparent;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+        }
+
+        .search-bar button {
+            background: var(--primary);
+            border: none;
+            padding: 0 1rem;
+            color: var(--bg);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .search-bar button:hover {
+            background: var(--primary-dark);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-family: 'Space Grotesk', sans-serif;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 8px;
+        }
+
+        .tab:hover {
+            color: var(--primary);
+        }
+
+        .alerts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .alert-card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: var(--transition);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .alert-card:nth-child(1) {
+            animation: fadeInUp 0.8s ease-out 0.1s forwards;
+        }
+
+        .alert-card:nth-child(2) {
+            animation: fadeInUp 0.8s ease-out 0.2s forwards;
+        }
+
+        .alert-card:nth-child(3) {
+            animation: fadeInUp 0.8s ease-out 0.3s forwards;
+        }
+
+        .alert-card.critical {
+            border-left: 4px solid var(--alert-critical);
+        }
+
+        .alert-card.warning {
+            border-left: 4px solid var(--alert-warning);
+        }
+
+        .alert-card:hover {
+            background: var(--card-hover);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .alert-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .alert-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .alert-timestamp {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .alert-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .alert-description {
+            color: var(--text);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .alert-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-size: 0.9rem;
+            background: var(--primary);
+            color: var(--bg);
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--card);
+            padding: 1.5rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            border: 1px solid rgba(0, 255, 136, 0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .modal-header h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-btn:hover {
+            color: var(--primary);
+        }
+
+        .warning-message {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid var(--alert-critical);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .warning-message i {
+            color: var(--alert-critical);
+            font-size: 1.2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.3rem;
+            font-family: 'Space Grotesk', sans-serif;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.6rem;
+            background: var(--bg-light);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-group input:invalid:not(:placeholder-shown),
+        .form-group select:invalid:not(:placeholder-shown),
+        .form-group textarea:invalid:not(:placeholder-shown) {
+            border-color: var(--error-red);
+        }
+
+        .error-message {
+            color: var(--error-red);
+            font-size: 0.7rem;
+            margin-top: 0.2rem;
+            display: none;
+        }
+
+        .form-group input:invalid:not(:placeholder-shown)+.error-message,
+        .form-group select:invalid:not(:placeholder-shown)+.error-message,
+        .form-group textarea:invalid:not(:placeholder-shown)+.error-message {
+            display: block;
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.2);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav ul {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 60%;
+                height: 100vh;
+                background: var(--bg-light);
+                flex-direction: column;
+                justify-content: center;
+                gap: 1.5rem;
+                transition: var(--transition);
+                z-index: 1000;
+            }
+
+            nav ul.active {
+                right: 0;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .hamburger.active div:nth-child(1) {
+                transform: rotate(-45deg) translate(-4px, 5px);
+            }
+
+            .hamburger.active div:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active div:nth-child(3) {
+                transform: rotate(45deg) translate(-4px, -5px);
+            }
+
+            .alerts-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .search-bar {
+                width: 100%;
+            }
+
+            .modal-content {
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header id="header">
+        <div class="logo">HELPHOOD <span></span></div>
+        <nav>
+            <ul id="nav">
+                <li><a href="#">Home</a></li>
+
+                <li><a href="#" class="active">Safety Alerts</a></li>
+
+            </ul>
+        </nav>
+        <div class="hamburger" id="hamburger">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="alerts-header">
+            <h1>Safety Alerts</h1>
+            <div class="search-bar">
+                <input type="text" placeholder="Search alerts...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="all">All Alerts</div>
+            <div class="tab" data-tab="critical">Critical</div>
+            <div class="tab" data-tab="warning">Warnings</div>
+        </div>
+
+        <div class="alerts-list" id="alerts-container">
+            <!-- Alert cards will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <!-- Add Alert Modal -->
+    <div class="modal" id="add-alert-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Add New Alert</h2>
+                <button class="close-btn">×</button>
+            </div>
+            <div class="warning-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Please post only serious safety alerts. Non-serious or false alerts may lead to account
+                    suspension.</span>
+            </div>
+            <form id="alert-form">
+                <div class="form-group">
+                    <label for="alert-title">Alert Title</label>
+                    <input type="text" id="alert-title" required minlength="3" maxlength="50"
+                        placeholder="Enter alert title">
+                    <div class="error-message">Title must be between 3 and 50 characters</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="alert-type">Alert Type</label>
+                    <select id="alert-type" required>
+                        <option value="" disabled selected>Select alert type</option>
+                        <option value="critical">Critical</option>
+                        <option value="warning">Warning</option>
+                    </select>
+                    <div class="error-message">Please select an alert type</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="alert-location">Location</label>
+                    <input type="text" id="alert-location" required minlength="3" maxlength="100"
+                        placeholder="Enter alert location">
+                    <div class="error-message">Location must be between 3 and 100 characters</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="alert-description">Description</label>
+                    <textarea id="alert-description" required minlength="10" maxlength="300"
+                        placeholder="Describe the alert..."></textarea>
+                    <div class="error-message">Description must be between 10 and 300 characters</div>
+                </div>
+
+                <button type="submit" class="btn">Post Alert</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- My Alerts Modal -->
+    <div class="modal" id="my-alerts-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>My Alerts</h2>
+                <button class="close-btn">×</button>
+            </div>
+            <div class="alerts-list" id="my-alerts-container">
+                <!-- User's alerts will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample alert data
+        const alerts = [
+            {
+                id: 1,
+                title: "Road Closure",
+                type: "critical",
+                location: "Main St & 5th Ave",
+                description: "Emergency road closure due to a gas leak. Avoid the area until further notice.",
+                timestamp: "2025-05-30T22:30:00Z",
+                verified: true
+            },
+            {
+                id: 2,
+                title: "Suspicious Activity",
+                type: "warning",
+                location: "Green Valley Park",
+                description: "Reports of suspicious activity near the park entrance. Exercise caution.",
+                timestamp: "2025-05-30T20:00:00Z",
+                verified: true
+            },
+            {
+                id: 3,
+                title: "Power Outage",
+                type: "critical",
+                location: "Riverside Neighborhood",
+                description: "Widespread power outage affecting multiple blocks. Crews are working to restore power.",
+                timestamp: "2025-05-30T18:45:00Z",
+                verified: true
+            }
+        ];
+
+        // User's alerts (initially empty)
+        let userAlerts = [];
+
+        // DOM elements
+        const alertsContainer = document.getElementById('alerts-container');
+        const myAlertsContainer = document.getElementById('my-alerts-container');
+        const addAlertModal = document.getElementById('add-alert-modal');
+        const myAlertsModal = document.getElementById('my-alerts-modal');
+        const addAlertBtn = document.getElementById('add-alert-btn');
+        const myAlertsBtn = document.getElementById('my-alerts-btn');
+        const closeBtns = document.querySelectorAll('.close-btn');
+        const alertForm = document.getElementById('alert-form');
+        const tabs = document.querySelectorAll('.tab');
+        const modalTitle = document.getElementById('modal-title');
+        const hamburger = document.getElementById('hamburger');
+        const nav = document.getElementById('nav');
+
+        // Initialize the alerts page
+        function initAlerts() {
+            renderAlerts(alerts);
+            setupEventListeners();
+        }
+
+        // Format timestamp for display
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            });
+        }
+
+        // Simulate verification (client-side)
+        function verifyAlert(alert) {
+            // Mock verification: alerts with "emergency" or "urgent" are auto-verified
+            const keywords = ['emergency', 'urgent', 'critical'];
+            const text = `${alert.title.toLowerCase()} ${alert.description.toLowerCase()}`;
+            return keywords.some(keyword => text.includes(keyword)) || Math.random() > 0.3;
+        }
+
+        // Render alerts to the page
+        function renderAlerts(alertsToRender) {
+            alertsContainer.innerHTML = '';
+
+            alertsToRender.forEach(alert => {
+                const alertCard = document.createElement('div');
+                alertCard.className = `alert-card ${alert.type}`;
+                alertCard.innerHTML = `
+                    <div class="alert-header">
+                        <h3 class="alert-title">${alert.title} ${alert.verified ? '<i class="fas fa-check-circle" style="color: var(--primary); font-size: 0.8rem;"></i>' : ''}</h3>
+                        <div class="alert-timestamp">${formatTimestamp(alert.timestamp)}</div>
+                    </div>
+                    <div class="alert-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> ${alert.location}</span>
+                        <span><i class="fas fa-exclamation-circle"></i> ${alert.type.charAt(0).toUpperCase() + alert.type.slice(1)}</span>
+                    </div>
+                    <p class="alert-description">${alert.description}</p>
+                    <div class="alert-actions">
+                        <button class="btn">Share</button>
+                    </div>
+                `;
+                alertsContainer.appendChild(alertCard);
+            });
+        }
+
+        // Render user's alerts
+        function renderUserAlerts() {
+            myAlertsContainer.innerHTML = '';
+
+            if (userAlerts.length === 0) {
+                myAlertsContainer.innerHTML = '<p style="color: var(--text-muted); text-align: center;">You have no alerts yet. Create your first alert!</p>';
+                return;
+            }
+
+            userAlerts.forEach(alert => {
+                const alertCard = document.createElement('div');
+                alertCard.className = `alert-card ${alert.type}`;
+                alertCard.innerHTML = `
+                    <div class="alert-header">
+                        <h3 class="alert-title">${alert.title} ${alert.verified ? '<i class="fas fa-check-circle" style="color: var(--primary); font-size: 0.8rem;"></i>' : ''}</h3>
+                        <div class="alert-timestamp">${formatTimestamp(alert.timestamp)}</div>
+                    </div>
+                    <div class="alert-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> ${alert.location}</span>
+                        <span><i class="fas fa-exclamation-circle"></i> ${alert.type.charAt(0).toUpperCase() + alert.type.slice(1)}</span>
+                    </div>
+                    <p class="alert-description">${alert.description}</p>
+                    <div class="alert-actions">
+                        <button class="btn edit-btn" data-id="${alert.id}">Edit</button>
+                        <button class="btn delete-btn" data-id="${alert.id}">Delete</button>
+                    </div>
+                `;
+                myAlertsContainer.appendChild(alertCard);
+            });
+
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = parseInt(e.target.getAttribute('data-id'));
+                    editAlert(id);
+                });
+            });
+
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = parseInt(e.target.getAttribute('data-id'));
+                    deleteAlert(id);
+                });
+            });
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Header scroll effect
+            window.addEventListener('scroll', () => {
+                const header = document.getElementById('header');
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+
+            // Mobile menu
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                nav.classList.toggle('active');
+            });
+
+            nav.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    hamburger.classList.remove('active');
+                    nav.classList.remove('active');
+                });
+            });
+
+            // Modal toggles
+            document.getElementById('add-alert-btn').addEventListener('click', () => {
+                modalTitle.textContent = 'Add New Alert';
+                alertForm.reset();
+                alertForm.onsubmit = (e) => {
+                    e.preventDefault();
+                    addNewAlert();
+                };
+                addAlertModal.style.display = 'flex';
+            });
+
+            document.getElementById('my-alerts-btn').addEventListener('click', () => {
+                renderUserAlerts();
+                myAlertsModal.style.display = 'flex';
+            });
+
+            // Close modals
+            closeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    addAlertModal.style.display = 'none';
+                    myAlertsModal.style.display = 'none';
+                    alertForm.reset();
+                });
+            });
+
+            // Click outside modal
+            window.addEventListener('click', (e) => {
+                if (e.target === addAlertModal) {
+                    addAlertModal.style.display = 'none';
+                    alertForm.reset();
+                }
+                if (e.target === myAlertsModal) {
+                    myAlertsModal.style.display = 'none';
+                }
+            });
+
+            // Form submission
+            alertForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (alertForm.onsubmit.toString().includes('addNewAlert')) {
+                    addNewAlert();
+                }
+            });
+
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    const type = tab.getAttribute('data-tab');
+                    if (type === 'all') {
+                        renderAlerts(alerts);
+                    } else {
+                        const filteredAlerts = alerts.filter(
+                            alert => alert.type === type
+                        );
+                        renderAlerts(filteredAlerts);
+                    }
+                });
+            });
+        }
+
+        // Add new alert
+        function addNewAlert() {
+            const title = document.getElementById('alert-title').value;
+            const type = document.getElementById('alert-type').value;
+            const location = document.getElementById('alert-location').value;
+            const description = document.getElementById('alert-description').value;
+
+            if (!alertForm.checkValidity()) {
+                alertForm.reportValidity();
+                return;
+            }
+
+            const newAlert = {
+                id: Date.now(),
+                title,
+                type,
+                location,
+                description,
+                timestamp: new Date().toISOString(),
+                verified: verifyAlert({ title, description })
+            };
+
+            userAlerts.push(newAlert);
+            alertForm.reset();
+            addAlertModal.style.display = 'none';
+            renderUserAlerts();
+            alert('Your alert has been posted successfully!');
+        }
+
+        // Edit alert
+        function editAlert(id) {
+            const alert = userAlerts.find(item => item.id === id);
+            if (!alert) return;
+
+            modalTitle.textContent = 'Edit Alert';
+            document.getElementById('alert-title').value = alert.title;
+            document.getElementById('alert-type').value = alert.type;
+            document.getElementById('alert-location').value = alert.location;
+            document.getElementById('alert-description').value = alert.description;
+
+            alertForm.onsubmit = (e) => {
+                e.preventDefault();
+                updateAlert(id);
+            };
+
+            addAlertModal.style.display = 'flex';
+        }
+
+        // Update alert
+        function updateAlert(id) {
+            const title = document.getElementById('alert-title').value;
+            const type = document.getElementById('alert-type').value;
+            const location = document.getElementById('alert-location').value;
+            const description = document.getElementById('alert-description').value;
+
+            if (!alertForm.checkValidity()) {
+                alertForm.reportValidity();
+                return;
+            }
+
+            const alertIndex = userAlerts.findIndex(item => item.id === id);
+
+            if (alertIndex !== -1) {
+                userAlerts[alertIndex].title = title;
+                userAlerts[alertIndex].type = type;
+                userAlerts[alertIndex].location = location;
+                userAlerts[alertIndex].description = description;
+                userAlerts[alertIndex].verified = verifyAlert({ title, description });
+
+                alertForm.reset();
+                addAlertModal.style.display = 'none';
+                renderUserAlerts();
+                alert('Your alert has been updated successfully!');
+                alertForm.onsubmit = (e) => {
+                    e.preventDefault();
+                    addNewAlert();
+                };
+            }
+        }
+
+        // Delete alert
+        function deleteAlert(id) {
+            if (confirm('Are you sure you want to delete this alert?')) {
+                userAlerts = userAlerts.filter(item => item.id !== id);
+                renderUserAlerts();
+            }
+        }
+
+        // Initialize the app
+        initAlerts();
+    </script>
+</body>
+
+</html>
