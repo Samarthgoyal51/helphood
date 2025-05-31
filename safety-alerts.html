@@ -453,8 +453,41 @@
             }
         }
 
-        /* Responsive */
+        /* Enhanced Responsive Design */
+        @media (max-width: 1200px) {
+            .container {
+                max-width: 95%;
+            }
+
+            .search-bar {
+                width: 220px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .alerts-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .modal-content {
+                width: 95%;
+                max-width: 500px;
+            }
+        }
+
         @media (max-width: 768px) {
+            header {
+                padding: 0.8rem 4%;
+            }
+
+            .logo {
+                font-size: 1.4rem;
+            }
+
             nav ul {
                 position: fixed;
                 top: 0;
@@ -467,10 +500,17 @@
                 gap: 1.5rem;
                 transition: var(--transition);
                 z-index: 1000;
+                padding: 2rem;
             }
 
             nav ul.active {
                 right: 0;
+            }
+
+            nav ul li a {
+                font-size: 1.2rem;
+                padding: 1rem 0;
+                text-align: center;
             }
 
             .hamburger {
@@ -489,6 +529,11 @@
                 transform: rotate(45deg) translate(-4px, -5px);
             }
 
+            .container {
+                margin: 5rem auto 2rem;
+                padding: 0 4%;
+            }
+
             .alerts-header {
                 flex-direction: column;
                 align-items: flex-start;
@@ -499,8 +544,121 @@
                 width: 100%;
             }
 
+            .tabs {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .tab {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.85rem;
+            }
+
+            .alert-card {
+                padding: 1.2rem;
+            }
+
+            .alert-title {
+                font-size: 1.1rem;
+            }
+
+            .alert-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+                font-size: 0.85rem;
+            }
+
+            .alert-description {
+                font-size: 0.85rem;
+            }
+
             .modal-content {
                 width: 95%;
+                padding: 1.5rem;
+            }
+
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                padding: 0.7rem;
+                font-size: 1rem;
+            }
+
+            .btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                margin: 4.5rem auto 1.5rem;
+                padding: 0 3%;
+            }
+
+            .alerts-header h1 {
+                font-size: 1.6rem;
+            }
+
+            .alert-card {
+                padding: 1rem;
+            }
+
+            .alert-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .alert-title {
+                font-size: 1rem;
+            }
+
+            .alert-timestamp {
+                font-size: 0.75rem;
+            }
+
+            .alert-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .modal-content {
+                padding: 1rem;
+            }
+
+            .warning-message {
+                padding: 0.8rem;
+                font-size: 0.85rem;
+            }
+
+            .form-group {
+                margin-bottom: 0.8rem;
+            }
+        }
+
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .alert-card:hover {
+                transform: none;
+                background: var(--card);
+            }
+
+            .btn:hover,
+            .tab:hover {
+                transform: none;
+            }
+
+            /* Larger touch targets */
+            .btn,
+            .tab,
+            .close-btn {
+                min-height: 44px;
+                min-width: 44px;
+            }
+
+            .hamburger {
+                padding: 10px;
             }
         }
     </style>
